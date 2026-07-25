@@ -163,33 +163,48 @@ Each booking operation runs inside an explicit database transaction ensuring:
 ### Prerequisites
 
 - Python 3.9+
-- PostgreSQL
 
-### Setup
+### Setup (SQLite — zero config)
 
 ```bash
-# Clone the repo
 git clone https://github.com/awakedupex/railway-reservation.git
 cd railway-reservation
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Set database URL
-echo "DATABASE_URL=postgresql://user:pass@localhost:5432/railway" > .env
-
-# Seed the database
 python3 seed.py
-
-# Start the server
 uvicorn app.main:app --reload
 ```
 
 Visit **http://localhost:8000/docs** for interactive API documentation.
 
+### Setup (PostgreSQL)
+
+```bash
+# Set your database URL
+echo "DATABASE_URL=postgresql://user:pass@localhost:5432/railway" > .env
+python3 seed.py
+uvicorn app.main:app --reload
+```
+
 ## Deployment
 
-### Render (Free Tier)
+### PythonAnywhere (free, no credit card)
+
+1. Sign up at **pythonanywhere.com** with GitHub
+2. **Web** tab → **Add a new web app** → **Manual Configuration** → **Python 3.11**
+3. Open **Bash console** and run:
+```bash
+git clone https://github.com/awakedupex/railway-reservation.git
+cd railway-reservation
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt gunicorn uvicorn
+python seed.py
+```
+4. Back in **Web** tab → **WSGI configuration file**:
+   - Replace contents with: `from wsgi import app`
+5. **Virtualenv** section → set path to `/home/yourname/railway-reservation/venv`
+6. Click **Reload**
+
+### Render (requires credit card)
 
 1. Push this repo to GitHub
 2. Create a PostgreSQL database on [Neon.tech](https://neon.tech) (free)
